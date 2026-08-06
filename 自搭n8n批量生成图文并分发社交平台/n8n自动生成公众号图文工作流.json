@@ -1,0 +1,495 @@
+{
+  "name": "My workflow 4",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -1088,
+        112
+      ],
+      "id": "72c12d7e-5c7f-4097-aacb-e02fcc3cdb87",
+      "name": "When chat message received",
+      "webhookId": "321aa19f-4886-4457-9b41-08004ef43b50"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        320
+      ],
+      "id": "5d66cd6f-4a1e-4514-ac4e-60187b01f393",
+      "name": "Google Gemini Chat Model3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "wcVEox7QryaGvwrO",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n        \"title\": \"<title>\",\n        \"content\": \"<content>\",\n        \"cover\": \"<cover>\"\n}\n",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -224,
+        352
+      ],
+      "id": "0a97ae1c-7a93-4ea2-9911-63df606d2473",
+      "name": "Structured Output Parser2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        512
+      ],
+      "id": "8d448f76-9db5-4a8d-8a00-a36bd79b299d",
+      "name": "Google Gemini Chat Model4",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "wcVEox7QryaGvwrO",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "={{ $json.file_path }}",
+        "dataPropertyName": "weixindata",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        592,
+        96
+      ],
+      "id": "3a126bf4-ba63-4ee6-bdbe-5e0c4dc84bed",
+      "name": "Read/Write Files from Disk1"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.0-flash-exp-image-generation",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.0-flash-exp-image-generation"
+        },
+        "prompt": "={{ $json.output.cover }}",
+        "options": {
+          "binaryPropertyOutput": "weixindata"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        16,
+        160
+      ],
+      "id": "0689ff28-e836-473c-9744-df16126d3258",
+      "name": "Generate an image1",
+      "alwaysOutputData": false,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "wcVEox7QryaGvwrO",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=- Role: 公众号爆文文案创作专家兼AI绘画提示词设计师\n- Background: 用户会输入一个“主题词”，你需要根据该主题自动识别文章类型（如情感、成长、生活、职场、旅行、科技、观察、励志、美食、亲情、社会洞察等），并创作出一篇符合公众号爆文风格的原创文案。同时，为文章生成一个贴合主题的AI绘画封面提示词，以提升视觉吸引力和传播效果。最终输出格式为标准JSON，仅包含标题、正文和封面提示词。\n- Profile: 你是一位资深的公众号内容创作专家，熟悉不同类型公众号爆文的写作规律，能够捕捉生活与社会中的细节，提炼情绪共鸣点，运用真挚、自然、具象的语言唤起读者共鸣。你同时具备视觉表达能力，能够将文章情感与画面结合，为AI生成具有感染力的封面提示词。\n- Skills:\n  * 熟悉公众号爆文的常见结构：开篇引导共鸣 → 情绪递进 → 生活细节描写 → 结尾升华；\n  * 能根据主题词自动判断文案风格（如温情、治愈、理性、文艺、励志、深思、洞察等）；\n  * 擅长以第一人称视角叙述，增强真实感与代入感；\n  * 精通标题写作技巧，能用简短语言制造阅读欲；\n  * 熟悉AI绘画提示词描述逻辑，能清晰表达画面场景、氛围、色彩和风格；\n  * 输出格式必须为JSON格式，仅包含指定字段。\n- Goals:\n  1. 根据输入主题自动识别文案风格与核心情感；\n  2. 创作一篇具有传播力、情绪共鸣和画面感的公众号风格文章；\n  3. 提炼一个简洁而吸引人的标题；\n  4. 设计一个AI绘画封面提示词，描述画面主体、场景、氛围和色彩；\n  5. 确保输出严格为JSON格式，方便后续程序处理；\n  6. 输出结果仅保留一条，不生成多条候选。\n- Constraints:\n  * 文案内容应真实自然、贴近生活，避免空洞口号或机械化表达；\n  * 保持内容具有共鸣点和故事性；\n  * 标题应简洁、有亮点，能迅速抓住读者；\n  * 输出严格为JSON格式，不得包含多余解释或文本；\n  * “cover”字段中的提示词应可直接用于AI绘画生成，表达画面主体、场景氛围与色调；\n  * 输出仅包含一条结果。\n- OutputFormat:\n  输出结果必须为标准JSON格式，包含三个字段：\n  ```json\n  {\n      \"title\": \"title\",\n      \"content\": \"content\",\n      \"cover\": \"cover\"\n  }\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -288,
+        64
+      ],
+      "id": "2df3b224-1e55-429c-8af6-557bba185144",
+      "name": "AI Agent2"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        192,
+        96
+      ],
+      "id": "af432b5e-411f-4107-8a8f-d90c050b8970",
+      "name": "Merge1",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "qMTLbOoneCuCg5KK",
+          "mode": "list",
+          "cachedResultName": "微信bbc",
+          "cachedResultUrl": "/projects/c2tOjzJnThRuSmFU/datatables/qMTLbOoneCuCg5KK"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "content": "={{ $('AI Agent2').item.json.output.content }}",
+            "cover_prompt": "={{ $('AI Agent2').item.json.output.cover }}",
+            "local_image": "={{ $json.file_path }}",
+            "title": "={{ $json.title }}",
+            "keyword": "={{ $('When chat message received').item.json.chatInput }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "keyword",
+              "displayName": "keyword",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "content",
+              "displayName": "content",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cover",
+              "displayName": "cover",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cover_prompt",
+              "displayName": "cover_prompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cover_url",
+              "displayName": "cover_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "draft_media_id",
+              "displayName": "draft_media_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "local_image",
+              "displayName": "local_image",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        816,
+        96
+      ],
+      "id": "ae0e6a45-7ed9-4b88-ad60-5b465fdd89f7",
+      "name": "Insert row1"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "data = items[0].get(\"json\", {})\ntheme = data.get(\"chatInput\", \"\")\nn = int(data.get(\"n\", 5))\n\nout = []\nfor i in range(n):\n    out.append({\n        \"json\": {\n            \"chatInput\": theme,\n            \"variant_index\": i + 1\n        }\n    })\nreturn out\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -592,
+        112
+      ],
+      "id": "b8420c7c-8f49-4c5c-b5b9-a85a1d6b88fd",
+      "name": "Code in Python (Beta)3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ce2f3f77-869c-4e1b-ab40-f99ad5bb7007",
+              "name": "chatInput",
+              "value": "={{ $json.chatInput }}",
+              "type": "string"
+            },
+            {
+              "id": "824cc18c-18f1-44ea-8ef3-9874865d56ce",
+              "name": "n",
+              "value": 2,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -848,
+        112
+      ],
+      "id": "cfa92d47-ac68-46bd-a609-9f331d6ee532",
+      "name": "python生成的条数"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6ff3465c-7abd-4db6-981b-d4123b5be897",
+              "name": "title",
+              "value": "={{ $json.output.title }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "fa5460a9-3d3a-4f96-a707-3e2d0d79b138",
+      "name": "python传出主题名"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "from datetime import datetime\nimport random\nimport re\n\nfor item in items:\n    data = item.get(\"json\", {})\n\n    # 这里直接从合并后的同一个 item 里取 title\n    title = (\n        data.get(\"title\")  # 如果你用 Set 把 output.title 映射成了 title\n        or data.get(\"output\", {}).get(\"title\")  # 否则直接读 output.title\n        or \"未命名\"\n    )\n\n    clean_title = re.sub(r\"[\\\\/:*?\\\"<>|$!:]|[^a-zA-Z0-9\\u4e00-\\u9fa5\\s-]\", \"_\", title).strip(\"_ \")\n    ts = datetime.now().strftime(\"%Y%m%d%H%M%S\")\n    rand6 = random.randint(100000, 999999)\n\n    file_name = f\"{clean_title}_{ts}_{rand6}.png\"\n    file_path = f\"/data/fengmian/{file_name}\"\n\n    data.update({\n        \"title\": title,\n        \"file_name\": file_name,\n        \"file_path\": file_path,\n    })\n\nreturn items\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        384,
+        96
+      ],
+      "id": "241d84a2-080c-44f4-ad28-33caaeace14b",
+      "name": "python命名路径"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "python生成的条数",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser2": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk1": {
+      "main": [
+        [
+          {
+            "node": "Insert row1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate an image1": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "AI Agent2": {
+      "main": [
+        [
+          {
+            "node": "Generate an image1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "python传出主题名",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "python命名路径",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in Python (Beta)3": {
+      "main": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "python生成的条数": {
+      "main": [
+        [
+          {
+            "node": "Code in Python (Beta)3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "python传出主题名": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "python命名路径": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "51696b17-410a-4766-819f-affd8893ee6b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "281188f5a26b5caf5a05dbd80df6821bf4555c86fc93ed4ebef0069250adf257"
+  },
+  "id": "oBGvXw15ZNfBrv23",
+  "tags": []
+}
